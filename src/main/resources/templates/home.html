@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Golden Dish Caterers</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f9f9f9;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header Styles */
+    header {
+      background: linear-gradient(to right, #2c3e50, #4a6491);
+      color: white;
+      padding: 15px 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 50px;
+      margin-right: 15px;
+    }
+
+    .logo h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+
+    nav ul li {
+      margin-left: 25px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #ffd700;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/homepage_image.jpg') no-repeat center center/cover;
+      color: white;
+      text-align: center;
+      padding: 100px 20px;
+      margin-bottom: 40px;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero h2 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .hero p {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 30px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+      margin: 10px;
+    }
+
+    .btn-primary {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #3e8e41;
+      transform: translateY(-3px);
+    }
+
+    .btn-secondary {
+      background-color: #FF7F50;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #e67347;
+      transform: translateY(-3px);
+    }
+
+    /* Services Section */
+    .services {
+      padding: 60px 0;
+      text-align: center;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      color: #2c3e50;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(to right, #4CAF50, #FF7F50);
+      border-radius: 2px;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .service-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s;
+    }
+
+    .service-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .service-img {
+      height: 200px;
+      overflow: hidden;
+    }
+
+    .service-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+
+    .service-card:hover .service-img img {
+      transform: scale(1.1);
+    }
+
+    .service-content {
+      padding: 20px;
+    }
+
+    .service-content h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+
+    .service-content p {
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    /* Features Section */
+    .features {
+      background-color: #2c3e50;
+      color: white;
+      padding: 60px 0;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    .feature {
+      text-align: center;
+      padding: 30px 20px;
+    }
+
+    .feature i {
+      font-size: 3rem;
+      color: #FF7F50;
+      margin-bottom: 20px;
+    }
+
+    .feature h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #1a2530;
+      color: white;
+      padding: 40px 0 20px;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .footer-section h3 {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .footer-section h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 2px;
+      background: #FF7F50;
+    }
+
+    .footer-section p {
+      margin-bottom: 10px;
+    }
+
+    .footer-section ul {
+      list-style: none;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 10px;
+    }
+
+    .footer-section ul li a {
+      color: #ddd;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-section ul li a:hover {
+      color: #FF7F50;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+    }
+
+    .social-links a {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      background: #333;
+      border-radius: 50%;
+      color: white;
+      text-align: center;
+      line-height: 40px;
+      transition: background 0.3s;
+    }
+
+    .social-links a:hover {
+      background: #FF7F50;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid #444;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      nav ul {
+        margin-top: 20px;
+      }
+
+      nav ul li {
+        margin: 0 10px;
+      }
+
+      .hero h2 {
+        font-size: 2.2rem;
+      }
+
+      .hero p {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- Header -->
+<header>
+  <div class="container header-content">
+    <div class="logo">
+      <img src="images/homepage_image.jpg" alt="Golden Dish Caterers Logo">
+      <h1>Golden Dish Caterers</h1>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="#">Menu</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="container hero-content">
+    <h2>Exquisite Catering for Memorable Events</h2>
+    <p>Bringing delicious food to your events – weddings, parties, and corporate events!</p>
+    <div class="hero-buttons">
+      <a href="/register" class="btn btn-primary">Register Now</a>
+      <a href="/login" class="btn btn-secondary">Login</a>
+    </div>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section class="services container">
+  <h2 class="section-title">Our Catering Services</h2>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-img">
+        <img src="https://images.unsplash.com/photo-1568031813264-d394c5d474b9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Wedding Catering">
+      </div>
+      <div class="service-content">
+        <h3>Weddings</h3>
+        <p>Delicious catering for your special day! Our wedding packages are designed to make your celebration unforgettable.</p>
+        <a href="#" class="btn btn-secondary">Learn More</a>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-img">
+        <img src="https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Corporate Events">
+      </div>
+      <div class="service-content">
+        <h3>Corporate Events</h3>
+        <p>High-quality catering for business meetings, conferences, and corporate gatherings.</p>
+        <a href="#" class="btn btn-secondary">Learn More</a>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-img">
+        <img src="https://images.unsplash.com/photo-1532634922-8fe0b757fb13?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Party Catering">
+      </div>
+      <div class="service-content">
+        <h3>Party Catering</h3>
+        <p>Get the best food for your parties and gatherings. We make your events delicious and memorable.</p>
+        <a href="#" class="btn btn-secondary">Learn More</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+  <div class="container">
+    <h2 class="section-title" style="color: white;">Why Choose Us</h2>
+    <div class="features-grid">
+      <div class="feature">
+        <i class="fas fa-utensils"></i>
+        <h3>Gourmet Cuisine</h3>
+        <p>Delicious dishes prepared by our expert chefs using the finest ingredients.</p>
+      </div>
+      <div class="feature">
+        <i class="fas fa-calendar-check"></i>
+        <h3>Event Planning</h3>
+        <p>Complete event planning services to make your occasion truly special.</p>
+      </div>
+      <div class="feature">
+        <i class="fas fa-truck"></i>
+        <h3>Delivery & Setup</h3>
+        <p>We deliver, setup, and clean up so you can enjoy your event stress-free.</p>
+      </div>
+      <div class="feature">
+        <i class="fas fa-heart"></i>
+        <h3>Custom Menus</h3>
+        <p>Tailored menus to suit your preferences, dietary needs, and budget.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>About Us</h3>
+        <p>Golden Dish Caterers is a premium catering service specializing in weddings, corporate events, and private parties. We're committed to delivering exceptional food and service.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Menu</a></li>
+          <li><a href="#">Gallery</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Contact Us</h3>
+        <p><i class="fas fa-map-marker-alt"></i> 123 Catering Street, Colombo, Sri Lanka</p>
+        <p><i class="fas fa-phone"></i> +94 11 234 5678</p>
+        <p><i class="fas fa-envelope"></i> info@goldendish.lk</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Golden Dish Caterers | Serving Sri Lanka</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

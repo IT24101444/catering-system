@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Customer Bills</title>
+</head>
+<body>
+<h1>Customer Bills</h1>
+<table>
+  <tr>
+    <th>Bill ID</th>
+    <th>Customer ID</th>
+    <th>Total Amount</th>
+    <th>Status</th>
+  </tr>
+  <tr th:each="bill : ${bills}">
+    <td th:text="${bill.bill_id}"></td>
+    <td th:text="${bill.customer_id}"></td>
+    <td th:text="${bill.total_amount}"></td>
+    <td th:text="${bill.status}"></td>
+  </tr>
+</table>
+</body>
+</html>

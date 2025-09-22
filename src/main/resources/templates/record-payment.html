@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Payment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            padding: 15px;
+            text-align: center;
+        }
+
+        header nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        header nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        header nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .container {
+            padding: 50px;
+        }
+
+        form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"], input[type="number"], input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #FF7F50;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<header>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">View Bills</a></li>
+            <li><a href="#">Record Payment</a></li>
+            <li><a href="#">Event Budgets</a></li>
+            <li><a href="#">Staff Payments</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Record Payment Form -->
+<div class="container">
+    <h1>Record Payment</h1>
+    <form action="#" method="post">
+        <label for="bill_id">Bill ID</label>
+        <input type="text" id="bill_id" name="bill_id" required>
+
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" name="amount" required>
+
+        <label for="payment_method">Payment Method</label>
+        <input type="text" id="payment_method" name="payment_method" required>
+
+        <button type="submit">Record Payment</button>
+    </form>
+</div>
+
+</body>
+</html>

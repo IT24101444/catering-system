@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            padding: 15px;
+            text-align: center;
+            color: white;
+        }
+        .container {
+            text-align: center;
+            padding: 50px;
+        }
+        .cta-button {
+            background-color: #FF7F50;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .services {
+            padding: 50px 0;
+            text-align: center;
+        }
+        .service {
+            display: inline-block;
+            width: 200px;
+            margin: 20px;
+            padding: 30px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Welcome to Golden Dish Caterers</h1>
+</header>
+
+<div class="container">
+    <h2>Hello, <span id="username"></span></h2>
+    <p>Here’s what we offer:</p>
+
+    <div class="services">
+        <div class="service">
+            <h3>Weddings</h3>
+            <p>Delicious catering for your special day!</p>
+        </div>
+        <div class="service">
+            <h3>Corporate Events</h3>
+            <p>Professional catering for business events.</p>
+        </div>
+        <div class="service">
+            <h3>Party Catering</h3>
+            <p>Perfect meals for any kind of party!</p>
+        </div>
+    </div>
+
+    <a href="/logout" class="cta-button">Logout</a>
+</div>
+
+<footer>
+    <p>&copy; 2025 Golden Dish Caterers | Serving Sri Lanka</p>
+</footer>
+
+</body>
+</html>
