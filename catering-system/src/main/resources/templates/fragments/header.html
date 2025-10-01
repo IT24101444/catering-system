@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="header(activePage)">
+    <nav class="top-nav">
+        <div class="nav-wrap">
+            <div class="brand">Catering System</div>
+            <div class="nav-links">
+                <a th:href="@{/}"
+                   th:classappend="${activePage}=='home' ? ' active'">Home</a>
+                <a th:href="@{/chef/menus}"
+                   th:classappend="${activePage}=='menus' ? ' active'">Menu Management</a>
+                <a th:href="@{/chef/schedule-list}"
+                   th:classappend="${activePage}=='schedules' ? ' active'">Schedules</a>
+                <a th:href="@{/about}"
+                   th:classappend="${activePage}=='about' ? ' active'">About</a>
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>

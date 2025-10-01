@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Catering System</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body th:class="${bodyClass}">
+
+<!-- Top Navigation -->
+<header class="top-nav">
+    <div class="nav-wrap">
+        <div class="brand">🍽 Catering System</div>
+        <nav class="nav-links">
+            <a th:href="@{/home}" th:classappend="${activePage == 'home'} ? 'active'">Home</a>
+            <a th:href="@{/menu}" th:classappend="${activePage == 'menu'} ? 'active'">Menu</a>
+            <a th:href="@{/orders}" th:classappend="${activePage == 'orders'} ? 'active'">Orders</a>
+            <a th:href="@{/contact}" th:classappend="${activePage == 'contact'} ? 'active'">Contact</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1 class="title-gradient" th:text="${welcomeMessage}">Welcome!</h1>
+        <p>Plan, manage, and enjoy your events with our catering services.</p>
+        <div class="toolbar">
+            <a th:href="@{/menu}" class="btn btn-primary">Explore Menu</a>
+            <a th:href="@{/orders}" class="btn">View Orders</a>
+        </div>
+    </div>
+</section>
+
+<!-- Content -->
+<div class="page-wrap">
+    <div class="chef-ribbon"></div>
+    <div class="glass-card text-center">
+        <h2>Our Specialties</h2>
+        <p>From breakfast to desserts, we’ve got everything covered.</p>
+    </div>
+
+    <!-- Category Tiles -->
+    <div class="menu-grid mt-3">
+        <div class="tile tile--breakfast"><span class="label">Breakfast</span></div>
+        <div class="tile tile--soups"><span class="label">Soups</span></div>
+        <div class="tile tile--mains"><span class="label">Mains</span></div>
+        <div class="tile tile--pizza"><span class="label">Pizza</span></div>
+        <div class="tile tile--desserts"><span class="label">Desserts</span></div>
+        <div class="tile tile--drinks"><span class="label">Drinks</span></div>
+        <div class="tile tile--special"><span class="label">Specials</span></div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+    <small>&copy; 2025 Catering System. All rights reserved.</small>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="filterBar">
+    <form class="toolbar glass-card"
+          th:action="@{/chef/menus}"
+          method="get"
+          role="search"
+          aria-label="Menu filters">
+
+        <input type="hidden" name="eventId" th:if="${param.eventId}" th:value="${param.eventId}"/>
+
+        <label for="fb-category" class="visually-hidden">Category</label>
+        <select id="fb-category" class="form-select" name="category" style="max-width:180px" aria-label="Category">
+            <option value="" th:selected="${param.category == null}">All Categories</option>
+            <option value="1" th:selected="${param.category == '1'}">Category 1</option>
+            <option value="2" th:selected="${param.category == '2'}">Category 2</option>
+            <option value="3" th:selected="${param.category == '3'}">Category 3</option>
+        </select>
+
+        <label for="fb-status" class="visually-hidden">Status</label>
+        <select id="fb-status" class="form-select" name="status" style="max-width:150px" aria-label="Status">
+            <option value="" th:selected="${param.status == null}">All Status</option>
+            <option value="confirmed" th:selected="${param.status == 'confirmed'}">Confirmed</option>
+            <option value="draft" th:selected="${param.status == 'draft'}">Draft</option>
+            <option value="archived" th:selected="${param.status == 'archived'}">Archived</option>
+        </select>
+
+        <label for="fb-q" class="visually-hidden">Search name</label>
+        <input id="fb-q" class="form-control" name="q" placeholder="Search name..."
+               style="max-width:220px" th:value="${param.q}" aria-label="Search by name"/>
+
+        <label for="fb-sort" class="visually-hidden">Sort</label>
+        <select id="fb-sort" class="form-select" name="sort" style="max-width:150px" aria-label="Sort">
+            <option value="" th:selected="${param.sort == null}">Sort</option>
+            <option value="newest" th:selected="${param.sort == 'newest'}">Newest</option>
+            <option value="name_asc" th:selected="${param.sort == 'name_asc'}">A–Z</option>
+        </select>
+
+        <button class="btn btn-outline-primary" type="submit">Apply</button>
+        <a class="btn btn-outline-secondary" th:href="@{/chef/menus}">Reset</a>
+        <a class="btn btn-primary" th:href="@{/chef/menus/new}">Add New Menu</a>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${pageTitle} ?: 'Schedules'">Schedules</title>
+
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <style>
+        .page-wrap{max-width:1100px;margin:0 auto;padding:24px 16px;}
+        .top-nav{
+            position:sticky; top:0; z-index:1000;
+            background: linear-gradient(90deg, rgba(108,92,231,.95), rgba(0,184,148,.95));
+            box-shadow:0 10px 30px rgba(17, 38, 146, .18);
+            color:#fff;
+        }
+        .top-nav .nav-wrap{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;}
+        .top-nav .brand{font-weight:800;letter-spacing:.3px;}
+        .top-nav .nav-links{display:flex;gap:12px;flex-wrap:wrap;}
+        .top-nav .nav-links a{
+            color:#fff;text-decoration:none;padding:8px 12px;border-radius:10px;
+            background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.08));
+            border: 1px solid rgba(255,255,255,.18);
+        }
+        .top-nav .nav-links a.active{box-shadow: inset 0 0 0 999px rgba(255,255,255,.08);}
+
+        .actions-row{display:flex;justify-content:flex-end;gap:10px;margin-bottom:12px;}
+        .table thead th{vertical-align:middle}
+        .table-hover tbody tr:hover{background:#f7fbff}
+
+        .status-pill{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:700;font-size:.8rem}
+        .status-confirmed{background:#e8f7ee;color:#0d6b34;border:1px solid #bfe7cf}
+        .status-in_progress{background:#e6f3ff;color:#0b5ed7;border:1px solid #b9dbff}
+        .status-planned{background:#fff7e0;color:#8a6d00;border:1px solid #ffe08a}
+        .status-cancelled{background:#fde7ea;color:#a2273a;border:1px solid #f7b9c3}
+
+        footer{background: linear-gradient(90deg, #6c5ce7, #00b894); color:#fff; padding:12px 20px;}
+    </style>
+</head>
+<body>
+
+<nav class="top-nav">
+    <div class="nav-wrap">
+        <div class="brand">Catering System</div>
+        <div class="nav-links">
+            <a th:href="@{/}" th:classappend="${activePage}=='home' ? ' active' : ''">Home</a>
+            <a th:href="@{/menus}" th:classappend="${activePage}=='menu' ? ' active' : ''">Menu Management</a>
+            <a th:href="@{/schedule-list}" th:classappend="${activePage}=='schedules' ? ' active' : ''">Schedules</a>
+            <a th:href="@{/about}" th:classappend="${activePage}=='about' ? ' active' : ''">About</a>
+        </div>
+    </div>
+</nav>
+
+<div class="page-wrap">
+    <header class="text-center mb-3">
+        <div class="role-chip">👨‍🍳 Head Chef</div>
+        <h1 class="display-6 fw-bold mt-2 title-gradient">Schedules</h1>
+    </header>
+
+    <section class="glass-card">
+        <div class="actions-row">
+            <!-- FIX: use /schedule-form instead of /schedule-new -->
+            <a th:href="@{/schedule-form}" class="btn btn-primary">Add New Schedule</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered mb-0">
+                <thead class="table-dark">
+                <tr>
+                    <th style="width:70px;">ID</th>
+                    <th>Event ID</th>
+                    <th>Chef ID</th>
+                    <th style="min-width:220px;">Plan details</th>
+                    <th>Status</th>
+                    <th style="width:180px;">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="schedule : ${schedules}"
+                    th:with="statusClass=
+                       ${#strings.equalsIgnoreCase(schedule.status,'confirmed')} ? 'status-confirmed' :
+                       (${#strings.equalsIgnoreCase(schedule.status,'in_progress')} ? 'status-in_progress' :
+                       (${#strings.equalsIgnoreCase(schedule.status,'planned')} ? 'status-planned' : 'status-cancelled'))">
+
+                    <td th:text="${schedule.id}">0</td>
+                    <td th:text="${schedule.eventId}">0</td>
+                    <td th:text="${schedule.chefId}">0</td>
+                    <td th:text="${schedule.plan}">Details...</td>
+                    <td>
+                        <span class="status-pill" th:classappend="${' ' + statusClass}" th:text="${schedule.status}">status</span>
+                    </td>
+                    <td class="text-nowrap">
+                        <!-- Align with form controller: edit via /schedule-form/{id} -->
+                        <a th:href="@{|/schedule-form/${schedule.id}|}" class="btn btn-outline-warning btn-sm me-2">Edit</a>
+                        <form th:action="@{|/schedule-delete/${schedule.id}|}" method="post" class="d-inline"
+                              onsubmit="return confirm('Delete this schedule?')">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+
+                <tr th:if="${schedules == null or #lists.isEmpty(schedules)}">
+                    <td colspan="6" class="text-center text-muted py-4">No schedules found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<footer class="text-center mt-4">
+    <small>Catering System © 2025. All rights reserved.</small>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
