@@ -28,4 +28,13 @@ public class MenuApiController {
     }
 }
 
+@RestController
+@RequestMapping("/api/menu-items")
+class MenuItemsAliasController {
+    private final MenuService menuService;
+    public MenuItemsAliasController(MenuService menuService) { this.menuService = menuService; }
+    @GetMapping
+    public List<MenuItem> list() { return menuService.getAllMenuItems(); }
+}
+
 

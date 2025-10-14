@@ -26,6 +26,9 @@ public class EmployeeService {
         if (employee.getEmployeeCode() == null || employee.getEmployeeCode().isEmpty()) {
             employee.setEmployeeCode(generateEmployeeCode(employee));
         }
+        if (employee.getInSalarySystem() == null) {
+            employee.setInSalarySystem(false);
+        }
         return employeeRepository.save(employee);
     }
 
@@ -36,6 +39,7 @@ public class EmployeeService {
                     existing.setLastName(updated.getLastName());
                     existing.setEmail(updated.getEmail());
                     existing.setPhone(updated.getPhone());
+                    existing.setAddress(updated.getAddress());
                     existing.setDepartment(updated.getDepartment());
                     existing.setPosition(updated.getPosition());
                     existing.setBaseSalary(updated.getBaseSalary());

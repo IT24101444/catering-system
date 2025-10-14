@@ -1,3 +1,9 @@
+-- Migration: add address to employees table if not exists
+ALTER TABLE employees ADD COLUMN IF NOT EXISTS address VARCHAR(500);
+
+-- Ensure employee_code is unique and not null by generating codes for rows without it
+-- Note: This is a simplistic placeholder; real systems would use a function or script.
+-- UPDATE employees SET employee_code = CONCAT('EMP', UPPER(LEFT(COALESCE(first_name,''),1)), UPPER(LEFT(COALESCE(last_name,''),1)), LPAD(id,5,'0')) WHERE employee_code IS NULL OR employee_code = '';
 -- Database migration script to fix column names
 -- Run this script to fix the drivers table structure
 

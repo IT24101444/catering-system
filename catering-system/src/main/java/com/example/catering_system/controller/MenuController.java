@@ -21,6 +21,11 @@ public class MenuController {
         return "menu";  // Ensure this is mapped to the menu.html template
     }
 
+    @GetMapping("/menu-react")
+    public String showMenuReact(Model model) {
+        return "menu-react";
+    }
+
     @PostMapping("/menu/add")
     public String addMenuItem(@RequestParam String name, @RequestParam String description,
                               @RequestParam double price,

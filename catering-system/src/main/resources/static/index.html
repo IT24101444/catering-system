@@ -226,7 +226,7 @@ header h1, header p {
     <p>Dedicated to providing a memorable culinary experience with exceptional food quality</p>
 
     <div class="button-group">
-        <a href="/menu">Browse Menus</a>
+        <a href="/menu-react">Browse Menus</a>
         <a href="/login">Book Your Event</a>
     </div>
 </div>
@@ -244,6 +244,14 @@ header h1, header p {
 
 
 
+
+
+<!-- Dome Gallery Section (before Reviews) -->
+<div class="menu-section" style="padding-top:30px;">
+    <h2>Explore Our Visual Gallery</h2>
+    <p>Swipe, drag and discover inspirations for your next event</p>
+    <div id="dome-gallery-root" style="height: 520px; max-width: 1100px; margin: 0 auto;"></div>
+</div>
 
 
 <!-- Reviews Section -->
@@ -354,6 +362,9 @@ fetch('/reviews/recent').then(r => r.ok ? r.json() : []).then(list => {
     `).join('');
 }).catch(() => {});
 </script>
+
+<!-- Dome gallery ESM bundle -->
+<script type="module" src="/js/dome-gallery.esm.js"></script>
 
 <!-- Footer Section -->
 <div class="footer">

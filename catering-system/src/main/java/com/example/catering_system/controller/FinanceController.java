@@ -66,6 +66,7 @@ public class FinanceController {
         return "finance-dashboard";
     }
 
+    // Finance can only manage salary enrollment/edit, not create employees.
     @GetMapping("/candidates")
     public String candidates(Model model) {
         List<Employee> candidates = employeeService.getAllEmployees().stream()

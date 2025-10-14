@@ -193,6 +193,53 @@
         </div>
     </main>
 
+    <!-- Edit Menu Modal -->
+    <div id="editMenuModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow max-w-xl w-full p-5">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg font-semibold">Edit Menu Item</h3>
+                <button onclick="closeEditMenu()" class="text-gray-600">✕</button>
+            </div>
+            <form id="editMenuForm" onsubmit="submitEditMenu(event)">
+                <input type="hidden" id="em-id" name="id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-sm text-gray-700">Name</label>
+                        <input id="em-name" name="name" class="border p-2 rounded w-full" required>
+                    </div>
+                    <div>
+                        <label class="text-sm text-gray-700">Price</label>
+                        <input id="em-price" name="price" type="number" step="0.01" min="0" class="border p-2 rounded w-full" required>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="text-sm text-gray-700">Description</label>
+                        <input id="em-description" name="description" class="border p-2 rounded w-full">
+                    </div>
+                    <div>
+                        <label class="text-sm text-gray-700">Category</label>
+                        <input id="em-category" name="category" class="border p-2 rounded w-full" required>
+                    </div>
+                    <div>
+                        <label class="text-sm text-gray-700">Cuisine</label>
+                        <input id="em-cuisine" name="cuisine" class="border p-2 rounded w-full">
+                    </div>
+                    <div>
+                        <label class="text-sm text-gray-700">Event Type</label>
+                        <input id="em-eventType" name="eventType" class="border p-2 rounded w-full">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="text-sm text-gray-700">Dishes Included</label>
+                        <input id="em-dishes" name="dishesIncluded" class="border p-2 rounded w-full">
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-end gap-2">
+                    <button type="button" onclick="closeEditMenu()" class="px-4 py-2 rounded border">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded text-white" style="background:#e4a801;">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const api = '/api';
 
@@ -372,12 +419,16 @@
                 if (!tbody) return;
                 tbody.innerHTML = items.map(m => `
                     <tr>
-                        <td class="px-4 py-2 text-sm text-gray-900">${m.name || ''}</td>
+                        <td class="px-4 py-2 text-sm text-gray-900">
+                            <div class="font-semibold">${m.name || ''}</div>
+                            <div class="text-xs text-gray-500">${m.description || ''}</div>
+                        </td>
                         <td class="px-4 py-2 text-sm text-gray-900">${m.cuisine || ''}</td>
                         <td class="px-4 py-2 text-sm text-gray-900">${m.eventType || ''}</td>
                         <td class="px-4 py-2 text-sm text-gray-900">${m.category || ''}</td>
-                        <td class="px-4 py-2 text-sm text-gray-900">${m.price != null ? 'Rs ' + m.price.toFixed(2) : ''}</td>
-                        <td class="px-4 py-2 text-sm">
+                        <td class="px-4 py-2 text-sm text-gray-900">${m.price != null ? 'Rs ' + Number(m.price).toFixed(2) : ''}</td>
+                        <td class="px-4 py-2 text-sm space-x-2">
+                            <button class="bg-blue-600 text-white px-3 py-1 rounded" onclick="openEditMenu(${m.id})">Edit</button>
                             <form action="/menu/${m.id}/delete" method="post" class="inline">
                                 <button class="bg-red-600 text-white px-3 py-1 rounded" onclick="return confirm('Delete this item?')">Delete</button>
                             </form>
@@ -396,6 +447,34 @@
                 if (res.ok) return res.json();
             } catch (e) {}
             return [];
+        }
+
+        // Edit modal helpers
+        function openEditMenu(id) {
+            const item = window.__MENU_CACHE?.find(it => it.id === id);
+            if (!item) return;
+            const modal = document.getElementById('editMenuModal');
+            if (!modal) return;
+            modal.querySelector('#em-id').value = item.id || '';
+            modal.querySelector('#em-name').value = item.name || '';
+            modal.querySelector('#em-description').value = item.description || '';
+            modal.querySelector('#em-price').value = item.price || '';
+            modal.querySelector('#em-category').value = item.category || '';
+            modal.querySelector('#em-cuisine').value = item.cuisine || '';
+            modal.querySelector('#em-eventType').value = item.eventType || '';
+            modal.querySelector('#em-dishes').value = item.dishesIncluded || '';
+            modal.classList.remove('hidden');
+        }
+        function closeEditMenu(){ document.getElementById('editMenuModal')?.classList.add('hidden'); }
+        async function submitEditMenu(e){
+            e.preventDefault();
+            const id = document.getElementById('em-id').value;
+            const form = document.getElementById('editMenuForm');
+            const data = new FormData(form);
+            const body = new URLSearchParams();
+            for (const [k,v] of data.entries()) body.append(k, v);
+            const res = await fetch(`/menu/${id}/edit`, { method:'POST', body });
+            if (res.ok) { closeEditMenu(); loadMenuItems(); } else { alert('Failed to update menu'); }
         }
     </script>
 </body>

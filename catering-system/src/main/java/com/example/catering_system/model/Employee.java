@@ -28,6 +28,8 @@ public class Employee {
     @Column(name = "phone")
     @Pattern(regexp = "\\d{10}", message = "Phone number must be exactly 10 digits")
     private String phone;
+    @Column(name = "address")
+    private String address;
     @Column(name = "position")
     @NotBlank(message = "Position is required")
     private String position;
@@ -100,6 +102,12 @@ public class Employee {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+    public String getAddress() {
+        return address;
+    }
+    public void setAddress(String address) {
+        this.address = address;
     }
     public String getDepartment() {
         return department;

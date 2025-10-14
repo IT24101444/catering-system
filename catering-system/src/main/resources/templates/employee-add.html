@@ -22,21 +22,29 @@
         <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-red-500 text-sm mt-1"></div>
     </div>
     <div>
-        <input type="text" th:field="*{phone}" id="phone" placeholder="Phone (10 digits)" class="border p-2 w-full" pattern="[0-9]{10}" title="Please enter exactly 10 digits" required>
+        <label class="text-sm text-gray-700 mb-1 block">Mobile (10 digits)</label>
+        <input type="text" th:field="*{phone}" id="phone" placeholder="07XXXXXXXX" class="border p-2 w-full" pattern="[0-9]{10}" title="Please enter exactly 10 digits" required>
         <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-red-500 text-sm mt-1"></div>
     </div>
     <div>
-        <input type="text" th:field="*{department}" placeholder="Department Name" class="border p-2 w-full" required>
+        <label class="text-sm text-gray-700 mb-1 block">Address</label>
+        <input type="text" th:field="*{address}" placeholder="Street, City" class="border p-2 w-full" required>
+        <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="text-red-500 text-sm mt-1"></div>
+    </div>
+    <div>
+        <label class="text-sm text-gray-700 mb-1 block">Department</label>
+        <select th:field="*{department}" class="border p-2 w-full" required>
+            <option value="" disabled selected>Select Department</option>
+            <option value="Kitchen">Kitchen</option>
+            <option value="Delivery">Delivery</option>
+            <option value="Finance">Finance</option>
+            <option value="Operations">Operations</option>
+        </select>
         <div th:if="${#fields.hasErrors('department')}" th:errors="*{department}" class="text-red-500 text-sm mt-1"></div>
     </div>
     <div>
-        <select th:field="*{position}" class="border p-2 w-full" required>
-            <option value="" disabled selected>Select Position</option>
-            <option value="Kitchen Staff">Kitchen Staff</option>
-            <option value="Delivery Staff">Delivery Staff</option>
-            <option value="Finance Staff">Finance Staff</option>
-            <option value="Action Staff">Action Staff</option>
-        </select>
+        <label class="text-sm text-gray-700 mb-1 block">Position / Role</label>
+        <input type="text" th:field="*{position}" placeholder="Role (e.g., Chef, Driver)" class="border p-2 w-full" required>
         <div th:if="${#fields.hasErrors('position')}" th:errors="*{position}" class="text-red-500 text-sm mt-1"></div>
     </div>
     <div>
