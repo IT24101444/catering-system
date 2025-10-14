@@ -42,4 +42,17 @@ public class LoginController {
         // Login failed
         return "redirect:/login"; // Redirect to login page with error message
     }
+
+    @PostMapping("/logout")
+    public String logout(@jakarta.servlet.http.CookieValue(value = "SESSION_ID", required = false) String sessionId,
+                         HttpServletResponse response) {
+        if (sessionId != null) {
+            SessionManager.getInstance().invalidate(sessionId);
+        }
+        Cookie cookie = new Cookie("SESSION_ID", "");
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
+    }
 }

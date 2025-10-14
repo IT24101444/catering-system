@@ -62,5 +62,8 @@ public class Payment {
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
+
+    public void setNotes(String reference) {
+    }
     // Getters and Setters
 }

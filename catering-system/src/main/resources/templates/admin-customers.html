@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Service</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center">
+                <h1 class="text-xl font-bold text-gray-800">Customer Service</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="/supervisor/dashboard" class="text-gray-600 hover:text-gray-900">Admin Dashboard</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-7xl mx-auto py-6 px-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <section class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Registered Users</h3>
+        </div>
+        <div class="px-6 pb-6 overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Username</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <tr th:each="u: ${users}">
+                    <td class="px-4 py-2" th:text="${u.username}">username</td>
+                    <td class="px-4 py-2" th:text="${u.fullName}">name</td>
+                    <td class="px-4 py-2" th:text="${u.email}">email</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Recent Reviews</h3>
+        </div>
+        <div class="px-6 pb-6">
+            <div class="space-y-3" th:if="${reviews}">
+                <div class="border rounded p-3" th:each="r: ${reviews}">
+                    <div class="font-semibold" th:text="${r.name}">Name</div>
+                    <div class="text-yellow-700" th:text="'★' + ${r.rating}">★5</div>
+                    <div class="text-sm text-gray-700" th:text="${r.comment}">comment</div>
+                    <div class="text-xs text-gray-500" th:text="${#temporals.format(r.createdAt, 'yyyy-MM-dd HH:mm')}">time</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>
+
+

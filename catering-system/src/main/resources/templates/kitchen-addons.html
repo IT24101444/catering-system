@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen Add-ons</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center">
+                <h1 class="text-xl font-bold text-gray-800">Kitchen Add-ons</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="/supervisor/dashboard" class="text-gray-600 hover:text-gray-900">Admin Dashboard</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-7xl mx-auto py-6 px-4">
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <form class="grid grid-cols-1 md:grid-cols-4 gap-3" action="/kitchen/addons/add" method="post">
+            <input class="border p-2 rounded" name="name" placeholder="Addon name (e.g., Live Kitchen)" required>
+            <input class="border p-2 rounded" name="pricePerGuest" type="number" step="0.01" placeholder="Price per guest (optional)">
+            <input class="border p-2 rounded" name="flatPrice" type="number" step="0.01" placeholder="Flat price (optional)">
+            <button class="bg-green-600 text-white px-4 py-2 rounded" type="submit">Add</button>
+        </form>
+    </div>
+
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Active Add-ons</h3>
+        </div>
+        <div class="px-6 pb-6 overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Price/Guest</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Flat Price</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <tr th:each="a: ${addons}">
+                    <td class="px-4 py-2" th:text="${a.name}">Live Kitchen</td>
+                    <td class="px-4 py-2" th:text="${a.pricePerGuest}">0.00</td>
+                    <td class="px-4 py-2" th:text="${a.flatPrice}">0.00</td>
+                    <td class="px-4 py-2">
+                        <form th:action="@{'/kitchen/addons/delete/' + ${a.id}}" method="post" class="inline">
+                            <button class="bg-red-600 text-white px-3 py-1 rounded" onclick="return confirm('Delete?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+</body>
+</html>
+
+

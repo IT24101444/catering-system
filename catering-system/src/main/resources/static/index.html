@@ -134,6 +134,55 @@ header h1, header p {
         height: auto;
         border-radius: 8px;  /* Optional: Adds rounded corners */
     }
+
+    /* User menu (welcome pill) */
+    .user-pill {
+        display: inline-flex;
+        align-items: center;
+        background-color: #fff;
+        color: #333;
+        border-radius: 9999px;
+        padding: 6px 12px;
+        cursor: pointer;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    }
+    .user-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 9999px;
+        background-color: #e4a801;
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 8px;
+    }
+    .dropdown {
+        position: absolute;
+        right: 20px;
+        top: 60px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+        min-width: 200px;
+        display: none;
+        overflow: hidden;
+        z-index: 50;
+    }
+    .dropdown a, .dropdown button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 10px 14px;
+        color: #333;
+        background: #fff;
+        border: none;
+        text-decoration: none;
+    }
+    .dropdown a:hover, .dropdown button:hover {
+        background: #f7f7f7;
+    }
     </style>
 </head>
 
@@ -142,13 +191,24 @@ header h1, header p {
 <div class="navbar">
     <div class="logo">
         <img src="/images/logo.png" alt="Golden Dish Logo">
-
+        
     </div>
-    <div>
+    <div id="navRight" style="position:relative; display:flex; align-items:center; gap:10px;">
         <a href="/">Home</a>
-        <a href="/supervisor/login">Supervisor Login</a>
-        <a href="/driver/login">Driver Login</a>
-        <a href="/driver/signup">Driver Signup</a>
+        <a id="navRegister" href="/register">Register</a>
+        <a id="navLogin" href="/login">Login</a>
+        <div id="navWelcomeWrap" style="display:none;">
+            <div id="navWelcome" class="user-pill">
+                <div id="navAvatar" class="user-avatar">U</div>
+                <span id="navUser" style="margin-right:6px;">User</span>
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+        </div>
+        <div id="navDropdown" class="dropdown">
+            <a href="/profile">Profile</a>
+            <a href="/orders/history">My Orders</a>
+            <button id="navLogout" type="button">Logout</button>
+        </div>
     </div>
 </div>
 <!-- Header Section -->
@@ -166,16 +226,134 @@ header h1, header p {
     <p>Dedicated to providing a memorable culinary experience with exceptional food quality</p>
 
     <div class="button-group">
-        <a href="#continental">Continental Menu</a>
-        <a href="#occasion">Occasion-Based Menus</a>
-        <a href="#fusion">Fusion Menu</a>
-        <a href="#kids">Kids Menu</a>
+        <a href="/menu">Browse Menus</a>
+        <a href="/login">Book Your Event</a>
     </div>
 </div>
 
 
+<!-- Featured Menus Preview -->
+<div class="menu-section" style="padding-top:10px;">
+    <div class="max-w-6xl mx-auto" style="padding: 0 20px;">
+        <div id="featuredMenus" class="grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px;"></div>
+        <div style="margin-top:16px;">
+            <a id="ctaBrowse" href="/menu" class="admin-login-button" style="background-color:#e4a801;">Explore Full Menu</a>
+        </div>
+    </div>
+    </div>
 
 
+
+
+
+<!-- Reviews Section -->
+<div class="menu-section" style="padding-top:30px;">
+    <h2>Share Your Experience</h2>
+    <p>Tell us about your event and food experience</p>
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+        <form action="/reviews/add" method="post" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <input class="border p-2 rounded" name="name" placeholder="Your Name" required>
+            <select class="border p-2 rounded" name="rating" required>
+                <option value="">Rating</option>
+                <option>5</option>
+                <option>4</option>
+                <option>3</option>
+                <option>2</option>
+                <option>1</option>
+            </select>
+            <input class="border p-2 rounded md:col-span-3" name="comment" placeholder="Your review" required>
+            <button class="bg-[#e4a801] text-white px-4 py-2 rounded md:col-span-1" type="submit">Submit</button>
+        </form>
+    </div>
+    <div class="max-w-3xl mx-auto mt-6 text-left">
+        <h3 class="text-xl font-semibold mb-2">Recent Reviews</h3>
+        <div id="recentReviews" class="space-y-2 text-sm text-gray-700"></div>
+    </div>
+</div>
+
+<script>
+// Session-aware navbar (beautiful welcome pill + dropdown)
+fetch('/api/session/me', { credentials: 'include' })
+ .then(r => r.ok ? r.json() : { authenticated:false })
+ .then(me => {
+   const navWelcomeWrap = document.getElementById('navWelcomeWrap');
+   const navWelcome = document.getElementById('navWelcome');
+   const navUser = document.getElementById('navUser');
+   const navLogin = document.getElementById('navLogin');
+   const navRegister = document.getElementById('navRegister');
+   const navLogout = document.getElementById('navLogout');
+   const navAvatar = document.getElementById('navAvatar');
+   const navDropdown = document.getElementById('navDropdown');
+   if (me.authenticated) {
+     navWelcomeWrap.style.display = 'inline-block';
+     const displayName = (me.fullName && me.fullName.trim()) ? me.fullName : (me.username || 'User');
+     navUser.textContent = displayName;
+     const initials = displayName.split(' ').map(s => s[0]).join('').substring(0,2).toUpperCase();
+     navAvatar.textContent = initials || 'U';
+     navLogin.style.display = 'none';
+     navRegister.style.display = 'none';
+     // dropdown toggle
+     let open = false;
+     const toggle = () => {
+       open = !open;
+       navDropdown.style.display = open ? 'block' : 'none';
+     };
+     navWelcome.addEventListener('click', toggle);
+     document.addEventListener('click', (e) => {
+       if (!navWelcome.contains(e.target) && !navDropdown.contains(e.target)) {
+         open = false;
+         navDropdown.style.display = 'none';
+       }
+     });
+   }
+   navLogout?.addEventListener('click', async (e) => {
+     e.preventDefault();
+     try { await fetch('/logout', { method: 'POST' }); } catch (_) {}
+     window.location.reload();
+   });
+ });
+
+// Load featured menus
+fetch('/api/menu')
+  .then(r => r.ok ? r.json() : [])
+  .then(items => {
+    const list = Array.isArray(items) ? items.slice(0, 4) : [];
+    const container = document.getElementById('featuredMenus');
+    if (!container) return;
+    container.innerHTML = list.map(m => `
+      <div class="bg-white" style="border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.08); overflow:hidden;">
+        <div style="height:140px; background:#f6f6f6; display:flex; align-items:center; justify-content:center;">
+          ${m.imageUrl ? `<img src="${m.imageUrl}" alt="${m.name}" style="max-height:140px; width:100%; object-fit:cover;">` : `<span style='color:#999'>No image</span>`}
+        </div>
+        <div style="padding:12px; text-align:left;">
+          <div style="font-weight:700; color:#333;">${m.name || ''}</div>
+          <div style="font-size:12px; color:#777; margin:4px 0;">${m.cuisine || ''} • ${m.eventType || ''}</div>
+          <div style="font-weight:700; color:#e4a801;">Rs ${m.price?.toFixed ? m.price.toFixed(2) : (m.price || 0)}</div>
+          <div style="margin-top:8px;">
+            <a href="/menu" style="background:#e4a801; color:#fff; padding:6px 10px; border-radius:8px; text-decoration:none; font-size:14px;">View & Book</a>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  })
+  .catch(() => {});
+
+// Ensure CTA buttons navigate
+document.getElementById('ctaBrowse')?.addEventListener('click', (e) => {
+  // default link works; this is a safety no-op to ensure mapping
+});
+// load recent reviews
+fetch('/reviews/recent').then(r => r.ok ? r.json() : []).then(list => {
+    const c = document.getElementById('recentReviews');
+    if (!c || !Array.isArray(list)) return;
+    c.innerHTML = list.slice(0,5).map(rv => `
+        <div class="bg-white p-3 rounded shadow">
+            <div class="font-semibold">${rv.name || 'Anonymous'} <span class="text-yellow-600">★${rv.rating}</span></div>
+            <div>${rv.comment || ''}</div>
+        </div>
+    `).join('');
+}).catch(() => {});
+</script>
 
 <!-- Footer Section -->
 <div class="footer">

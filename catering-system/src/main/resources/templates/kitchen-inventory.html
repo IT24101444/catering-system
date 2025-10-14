@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen Inventory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center">
+                <h1 class="text-xl font-bold text-gray-800">Inventory</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="/supervisor/dashboard" class="text-gray-600 hover:text-gray-900">Admin Dashboard</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-7xl mx-auto py-6 px-4">
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <form class="grid grid-cols-1 md:grid-cols-4 gap-3" action="/kitchen/inventory/upsert" method="post">
+            <input class="border p-2 rounded" name="name" placeholder="Item name" required>
+            <input class="border p-2 rounded" name="quantity" type="number" step="0.01" placeholder="Quantity" required>
+            <input class="border p-2 rounded" name="unit" placeholder="Unit (kg, L, pcs)" required>
+            <button class="bg-green-600 text-white px-4 py-2 rounded" type="submit">Add / Update</button>
+        </form>
+    </div>
+
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Stock Items</h3>
+        </div>
+        <div class="px-6 pb-6 overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Unit</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Updated</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                <tr th:each="i: ${items}">
+                    <td class="px-4 py-2" th:text="${i.name}">Name</td>
+                    <td class="px-4 py-2" th:text="${i.quantity}">0</td>
+                    <td class="px-4 py-2" th:text="${i.unit}">kg</td>
+                    <td class="px-4 py-2" th:text="${#temporals.format(i.lastUpdated, 'yyyy-MM-dd HH:mm')}">date</td>
+                    <td class="px-4 py-2 space-x-2">
+                        <form action="/kitchen/inventory/adjust" method="post" class="inline-flex space-x-2 items-center">
+                            <input type="hidden" name="name" th:value="${i.name}">
+                            <input class="border p-1 rounded w-24" name="delta" type="number" step="0.01" placeholder="±qty">
+                            <button class="bg-blue-600 text-white px-3 py-1 rounded">Adjust</button>
+                        </form>
+                        <form th:action="@{'/kitchen/inventory/delete/' + ${i.id}}" method="post" class="inline">
+                            <button class="bg-red-600 text-white px-3 py-1 rounded" onclick="return confirm('Delete?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+</body>
+</html>
+
+

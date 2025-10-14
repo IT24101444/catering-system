@@ -5,6 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        let bookingState = { menuId: null, menuName: '', price: 0 };
+        function openBooking(id, name, price) {
+            bookingState = { menuId: id, menuName: name, price: price };
+            document.getElementById('bkMenuName').textContent = name;
+            document.getElementById('bkModal').style.display = 'flex';
+        }
+        function closeBooking() {
+            document.getElementById('bkModal').style.display = 'none';
+        }
+        async function submitBooking(e) {
+            e.preventDefault();
+            const eventDate = document.getElementById('bkDate').value;
+            const guestCount = parseInt(document.getElementById('bkGuests').value || '0', 10);
+            const location = document.getElementById('bkLocation').value;
+            const eventType = document.getElementById('bkEventType').value;
+            const dietary = document.getElementById('bkDietary').value;
+            const addonIds = Array.from(document.querySelectorAll('input[name="bkAddonIds"]:checked')).map(cb => parseInt(cb.value,10));
+            try {
+                const res = await fetch('/api/booking', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        menuIds: [bookingState.menuId],
+                        eventDate, guestCount, location, eventType, dietaryRequirements: dietary,
+                        addonIds
+                    })
+                });
+                if (res.status === 401) { window.location.href = '/login'; return; }
+                if (!res.ok) { alert('Booking failed'); return; }
+                const data = await res.json();
+                closeBooking();
+                openPayment(data.invoiceId, data.amount);
+            } catch (e) {
+                alert('Booking failed');
+            }
+        }
+        function openPayment(invoiceId, amount) {
+            document.getElementById('payAmount').textContent = 'Rs ' + (amount?.toFixed ? amount.toFixed(2) : amount);
+            document.getElementById('payModal').dataset.invoiceId = invoiceId;
+            document.getElementById('payModal').dataset.amount = amount;
+            document.getElementById('payModal').style.display = 'flex';
+        }
+        function closePayment() {
+            document.getElementById('payModal').style.display = 'none';
+        }
+        async function payOnline() {
+            const modal = document.getElementById('payModal');
+            const invoiceId = parseInt(modal.dataset.invoiceId, 10);
+            const amount = parseFloat(modal.dataset.amount);
+            try {
+                const res = await fetch('/api/payments/online', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ invoiceId, amount })
+                });
+                if (res.status === 401) { window.location.href = '/login'; return; }
+                if (!res.ok) { alert('Payment failed'); return; }
+                alert('Payment processed. Awaiting finance confirmation.');
+                closePayment();
+            } catch (_) { alert('Payment failed'); }
+        }
+        async function submitBankReceipt() {
+            const modal = document.getElementById('payModal');
+            const invoiceId = parseInt(modal.dataset.invoiceId, 10);
+            const amount = parseFloat(modal.dataset.amount);
+            const reference = prompt('Enter bank receipt reference number');
+            if (!reference) return;
+            try {
+                const res = await fetch('/api/payments/bank-receipt', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ invoiceId, amount, reference })
+                });
+                if (res.status === 401) { window.location.href = '/login'; return; }
+                if (!res.ok) { alert('Submission failed'); return; }
+                alert('Receipt submitted. Finance will confirm.');
+                closePayment();
+            } catch (_) { alert('Submission failed'); }
+        }
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -83,9 +167,89 @@
             <p th:text="${item.description}">Dish description</p>
             <div class="text-xs text-gray-500" th:text="'Cuisine: ' + ${item.cuisine} + ' | Event: ' + ${item.eventType}">meta</div>
             <span th:text="'Rs ' + ${item.price}">Rs 15.00</span>
+            <div class="mt-3">
+                <button class="bg-[#e4a801] text-white px-4 py-2 rounded" th:onclick="|openBooking(${item.id}, '${item.name}', ${item.price})|">Book this menu</button>
+            </div>
         </div>
     </div>
 </main>
+<!-- Booking Modal -->
+<div id="bkModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:40;">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-xl p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-semibold">Book: <span id="bkMenuName"></span></h3>
+      <button onclick="closeBooking()" class="text-gray-500">✕</button>
+    </div>
+    <form onsubmit="submitBooking(event)" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div>
+        <label class="text-sm text-gray-600">Event Date</label>
+        <input id="bkDate" class="border p-2 rounded w-full" type="date" required>
+      </div>
+      <div>
+        <label class="text-sm text-gray-600">Guests</label>
+        <input id="bkGuests" class="border p-2 rounded w-full" type="number" min="1" placeholder="e.g., 100" required>
+      </div>
+      <div class="md:col-span-2">
+        <label class="text-sm text-gray-600">Location</label>
+        <input id="bkLocation" class="border p-2 rounded w-full" placeholder="Venue location" required>
+      </div>
+      <div>
+        <label class="text-sm text-gray-600">Event Type</label>
+        <select id="bkEventType" class="border p-2 rounded w-full" required>
+          <option value="Wedding">Wedding</option>
+          <option value="Birthday Party">Birthday Party</option>
+          <option value="Alms Giving">Alms Giving</option>
+          <option value="Other Function">Other Function</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-sm text-gray-600">Dietary (optional)</label>
+        <input id="bkDietary" class="border p-2 rounded w-full" placeholder="e.g., vegan, halal">
+      </div>
+      <div class="md:col-span-2">
+        <label class="text-sm text-gray-600">Optional Add-ons</label>
+        <div id="bkAddons" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700"></div>
+        <script>
+          // load add-ons
+          fetch('/api/addons').then(r => r.ok ? r.json() : []).then(addons => {
+            const wrap = document.getElementById('bkAddons');
+            if (!wrap) return;
+            wrap.innerHTML = addons.map(a => {
+              const price = (a.flatPrice ? ('Rs ' + a.flatPrice) : '') + (a.pricePerGuest ? (' ' + (a.flatPrice ? '+' : '') + a.pricePerGuest + '/guest') : '');
+              return `<label class="inline-flex items-center gap-2 border p-2 rounded">
+                        <input type="checkbox" name="bkAddonIds" value="${a.id}">
+                        <span>${a.name}</span>
+                        <span class="text-xs text-gray-500">${price}</span>
+                      </label>`;
+            }).join('');
+          }).catch(() => {});
+        </script>
+      </div>
+      <div class="md:col-span-2 flex justify-end gap-2 mt-2">
+        <button type="button" onclick="closeBooking()" class="px-4 py-2 rounded border">Cancel</button>
+        <button type="submit" class="px-4 py-2 rounded text-white" style="background:#e4a801;">Proceed to Payment</button>
+      </div>
+    </form>
+  </div>
+  </div>
+
+<!-- Payment Modal -->
+<div id="payModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:40;">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-semibold">Payment</h3>
+      <button onclick="closePayment()" class="text-gray-500">✕</button>
+    </div>
+    <div class="mb-4">
+      <div class="text-sm text-gray-600">Amount</div>
+      <div id="payAmount" class="text-2xl font-semibold text-gray-900">Rs 0.00</div>
+    </div>
+    <div class="grid grid-cols-1 gap-2">
+      <button onclick="payOnline()" class="w-full px-4 py-2 rounded text-white" style="background:#e4a801;">Pay Online</button>
+      <button onclick="submitBankReceipt()" class="w-full px-4 py-2 rounded border">Submit Bank Receipt</button>
+    </div>
+  </div>
+</div>
 <footer>
     <p>&copy; 2025 Catering System</p>
 </footer>

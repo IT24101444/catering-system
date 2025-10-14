@@ -14,9 +14,7 @@
                     <h1 class="text-xl font-bold text-gray-800">Kitchen Dashboard</h1>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <a href="/supervisor/dashboard" class="text-gray-600 hover:text-gray-900">Admin Dashboard</a>
-                    <a href="/delivery/dashboard" class="text-gray-600 hover:text-gray-900">Delivery Dashboard</a>
-                    <a href="/finance/dashboard" class="text-gray-600 hover:text-gray-900">Finance Dashboard</a>
+
                     <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Logout</button>
                 </div>
             </div>
@@ -24,6 +22,49 @@
     </nav>
 
     <main class="max-w-7xl mx-auto py-6 px-4">
+        <!-- Menu Management -->
+        <div class="bg-white rounded-lg shadow mb-8">
+            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900">Menu Management</h3>
+                <form class="flex items-center space-x-2" method="get" action="/kitchen-dashboard">
+                    <input class="border rounded px-3 py-2" type="text" name="cuisine" placeholder="Cuisine">
+                    <input class="border rounded px-3 py-2" type="text" name="eventType" placeholder="Event Type">
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded" type="submit">Filter</button>
+                </form>
+            </div>
+            <div class="p-6">
+                <form class="grid grid-cols-1 md:grid-cols-6 gap-3" action="/menu/add" method="post" enctype="multipart/form-data">
+                    <input class="border p-2 rounded" type="text" name="name" placeholder="Name" required>
+                    <input class="border p-2 rounded md:col-span-2" type="text" name="description" placeholder="Description" required>
+                    <input class="border p-2 rounded" type="number" step="0.01" min="0" name="price" placeholder="Price" required>
+                    <input class="border p-2 rounded" type="text" name="category" placeholder="Category" required>
+                    <input class="border p-2 rounded" type="text" name="cuisine" placeholder="Cuisine (optional)">
+                    <input class="border p-2 rounded" type="text" name="eventType" placeholder="Event Type (optional)">
+                    <input class="border p-2 rounded md:col-span-2" type="text" name="dishesIncluded" placeholder="Dishes Included (optional)">
+                    <input class="border p-2 rounded" type="file" name="image" accept="image/*">
+                    <button class="bg-green-600 text-white px-4 py-2 rounded md:col-span-1" type="submit">Add</button>
+                </form>
+            </div>
+            <div class="px-6 pb-6">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cuisine</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="menuItemsTable" class="bg-white divide-y divide-gray-200">
+                            <!-- Dynamic content filled by loadMenuItems() -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
         <!-- Kitchen Status Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-white p-6 rounded-lg shadow">
@@ -316,7 +357,46 @@
             loadKitchenData();
             // Refresh data every 30 seconds
             setInterval(loadKitchenData, 30000);
+            loadMenuItems();
         });
+
+        // Fetch and render menu items for management table
+        async function loadMenuItems() {
+            try {
+                const res = await fetch('/menu');
+                // Fallback: use controller data via HTML on /menu page; here we call JSON endpoint if exists
+            } catch (e) {}
+            try {
+                const items = await fetchMenuItems();
+                const tbody = document.getElementById('menuItemsTable');
+                if (!tbody) return;
+                tbody.innerHTML = items.map(m => `
+                    <tr>
+                        <td class="px-4 py-2 text-sm text-gray-900">${m.name || ''}</td>
+                        <td class="px-4 py-2 text-sm text-gray-900">${m.cuisine || ''}</td>
+                        <td class="px-4 py-2 text-sm text-gray-900">${m.eventType || ''}</td>
+                        <td class="px-4 py-2 text-sm text-gray-900">${m.category || ''}</td>
+                        <td class="px-4 py-2 text-sm text-gray-900">${m.price != null ? 'Rs ' + m.price.toFixed(2) : ''}</td>
+                        <td class="px-4 py-2 text-sm">
+                            <form action="/menu/${m.id}/delete" method="post" class="inline">
+                                <button class="bg-red-600 text-white px-3 py-1 rounded" onclick="return confirm('Delete this item?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                // Non-blocking; menu table may remain empty if no JSON endpoint is present
+            }
+        }
+
+        async function fetchMenuItems() {
+            // Try to fetch via a lightweight JSON endpoint if available; fallback to empty list
+            try {
+                const res = await fetch('/api/menu-items');
+                if (res.ok) return res.json();
+            } catch (e) {}
+            return [];
+        }
     </script>
 </body>
 </html>
